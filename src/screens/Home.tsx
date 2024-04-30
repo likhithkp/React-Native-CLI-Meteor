@@ -53,8 +53,9 @@ export default function Home() {
         `${BASE_URL}?q=${city}&APPID=ac4db0b006784d0854b9b8be0051879c&units=metric`,
       );
       const data = await res.json();
+      console.log('fetchWeather', JSON.stringify(data, null, 2));
 
-      if (data) {
+      if (data?.cod === 200) {
         setWeather(data);
         return;
       }
@@ -63,9 +64,6 @@ export default function Home() {
         ToastAndroid.show(data?.message, ToastAndroid.SHORT);
         return;
       }
-
-      console.log('fetchWeather', JSON.stringify(data, null, 2));
-      return;
     } catch {
       ToastAndroid.show('Unable to fetch the weather!', ToastAndroid.SHORT);
       return;
@@ -100,29 +98,24 @@ export default function Home() {
     return <ActivityIndicator animating={true} size="large" />;
   }
 
-  // eslint-disable-next-line no-lone-blocks
-  {
-    weather ? (
-      <View style={styles.container}>
-        <TextInput
-          style={styles.input}
-          placeholder="Search City"
-          keyboardType="default"
-          onChangeText={onChangeText}
-          value={city}
-        />
-        <Button
-          onPress={fetchWeather}
-          title="Search"
-          accessibilityLabel="Button to search weather for the city"
-        />
-        <Text style={styles.location}>{weather.name}</Text>
-        <Text style={styles.temperature}>{Math.round(weather.main.temp)}°</Text>
-      </View>
-    ) : (
-      <ActivityIndicator animating={true} size="large" />
-    );
-  }
+  return (
+    <View style={styles.container}>
+      <TextInput
+        style={styles.input}
+        placeholder="Search City"
+        keyboardType="default"
+        onChangeText={onChangeText}
+        value={city}
+      />
+      <Button
+        onPress={fetchWeather}
+        title="Search"
+        accessibilityLabel="Button to search weather for the city"
+      />
+      <Text style={styles.location}>{weather.name}</Text>
+      <Text style={styles.temperature}>{Math.round(weather.main.temp)}°</Text>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
